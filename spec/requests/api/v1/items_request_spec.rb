@@ -10,5 +10,17 @@ describe "Items API" do
     expect(response).to be_successful
 
     items = JSON.parse(response.body)
+    expect(items.count).to eq(3)
+  end
+
+  it "can show items by id" do
+    merchant = create(:merchant)
+    id = create(:item, merchant: merchant).id
+
+    get "/api/v1/items/#{id}"
+
+    item = JSON.parse(response.body)
+    expect(response).to be_successful
+    expect(item["id"]).to eq(id)
   end
 end
