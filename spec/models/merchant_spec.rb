@@ -1,5 +1,46 @@
 require 'rails_helper'
 
 RSpec.describe Merchant, type: :model do
-  it { should have_many :items }
+  describe 'relationships' do
+    it { should have_many :items }
+  end
+
+  describe 'calculations' do
+    before(:each) do
+      @customer = create(:customer)
+
+      @merchant_1 = create(:merchant)
+      @item_1 = create(:item, merchant: @merchant_1, unit_price: 12)
+      @invoice_1 = create(:invoice, merchant: @merchant_1, customer: @customer)
+      @invoice_item_1 = create(:invoice_item, item: @item_1, invoice: @invoice_1, quantity: 2, unit_price: 10, created_at: "2012-03-27 14:54:09 UTC")
+      @invoice_01 = create(:invoice, merchant: @merchant_1, customer: @customer)
+      @invoice_item_01 = create(:invoice_item, item: @item_1, invoice: @invoice_1, quantity: 2, unit_price: 10)
+
+      @merchant_2 = create(:merchant)
+      @item_2 = create(:item, merchant: @merchant_2, unit_price: 4)
+      @invoice_2 = create(:invoice, merchant: @merchant_2, customer: @customer)
+      @invoice_item_2 = create(:invoice_item, item: @item_2, invoice: @invoice_2, quantity: 5, unit_price: 5, created_at: "2012-03-27 14:54:09 UTC")
+      @invoice_02 = create(:invoice, merchant: @merchant_2, customer: @customer)
+      @invoice_item_02 = create(:invoice_item, item: @item_2, invoice: @invoice_2, quantity: 5, unit_price: 5)
+
+      @merchant_3 = create(:merchant)
+      @item_3 = create(:item, merchant: @merchant_3, unit_price: 6)
+      @invoice_3 = create(:invoice, merchant: @merchant_3, customer: @customer)
+      @invoice_item_3 = create(:invoice_item, item: @item_3, invoice: @invoice_3, quantity: 3, unit_price: 2, created_at: "2012-03-27 14:54:09 UTC")
+      @invoice_03 = create(:invoice, merchant: @merchant_3, customer: @customer)
+      @invoice_item_03 = create(:invoice_item, item: @item_3, invoice: @invoice_3, quantity: 3, unit_price: 2)
+    end
+
+    it 'can calculate top merchants by revenue' do
+      expect(Merchant.most_revenue(2)).to eq([@merchant_2, @merchant_1])
+    end
+
+    it 'can calculate top merchants by items_sold' do
+      expect(Merchant.most_items(2)).to eq([@merchant_2, @merchant_3])
+    end
+
+    it 'can calculate revenue for all merchants by date' do
+      expect(Merchant.revenue("2012-03-27 14:54:09 UTC")).to eq(51)
+    end
+  end
 end
