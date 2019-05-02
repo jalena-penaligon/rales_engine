@@ -197,5 +197,101 @@ describe "Merchants API" do
       expect(response).to be_successful
       expect(merchants["data"]["attributes"]).to eq("total_revenue" => "527.0")
     end
+
+    it "can show all of a single merchants items" do
+      merchant_1 = create(:merchant)
+      item_1 = create(:item, merchant: merchant_1)
+      item_2 = create(:item, merchant: merchant_1)
+      item_2 = create(:item, merchant: merchant_1)
+      id = merchant_1.id
+
+      get "/api/v1/merchants/#{id}/items"
+
+      items = JSON.parse(response.body)["data"]
+
+      expect(response).to be_successful
+
+      expect(items[0].count).to eq(3)
+      expect(items[0]["type"]).to eq("item")
+    end
+
+    it "can show all of a single merchants invoices" do
+      customer_1 = create(:customer)
+      #expected in output
+      merchant_1 = create(:merchant)
+      invoice_1 = create(:invoice, merchant: merchant_1, customer: customer_1)
+      invoice_2 = create(:invoice, merchant: merchant_1, customer: customer_1)
+      invoice_3 = create(:invoice, merchant: merchant_1, customer: customer_1)
+
+      #expected to not be in output
+      merchant_2 = create(:merchant)
+      invoice_4 = create(:invoice, merchant: merchant_2, customer: customer_1)
+
+      id = merchant_1.id
+      get "/api/v1/merchants/#{id}/invoices"
+
+      items = JSON.parse(response.body)["data"]
+
+      expect(response).to be_successful
+
+      expect(items[0].count).to eq(3)
+      expect(items[0]["type"]).to eq("invoice")
+    end
+
+    it "can show revenue for a merchant" do
+      customer_1 = create(:customer)
+      merchant_1 = create(:merchant)
+      item_1 = create(:item, merchant: merchant_1)
+
+      invoice_1 = create(:invoice, merchant: merchant_1, customer: customer_1)
+      transaction_1 = create(:transaction, result: 0, invoice: invoice_1)
+      invoice_item_1 = create(:invoice_item, item: item_1, invoice: invoice_1, quantity: 4, unit_price: 500)
+
+      invoice_2 = create(:invoice, merchant: merchant_1, customer: customer_1)
+      transaction_2 = create(:transaction, result: 0, invoice: invoice_2)
+      invoice_item_2 = create(:invoice_item, item: item_1, invoice: invoice_2, quantity: 2, unit_price: 1000)
+
+      invoice_3 = create(:invoice, merchant: merchant_1, customer: customer_1)
+      transaction_3 = create(:transaction, result: 0, invoice: invoice_3)
+      invoice_item_3 = create(:invoice_item, item: item_1, invoice: invoice_3, quantity: 5, unit_price: 2000)
+
+      id = merchant_1.id
+      get "/api/v1/merchants/#{id}/revenue"
+
+      revenue = JSON.parse(response.body)["data"]
+
+      expect(response).to be_successful
+
+      expect(revenue["type"]).to eq("revenue")
+      expect(revenue["attributes"]).to eq("revenue" => "140.0")
+    end
+
+    it "can show revenue for a merchant on a given date" do
+      customer_1 = create(:customer)
+      merchant_1 = create(:merchant)
+      item_1 = create(:item, merchant: merchant_1)
+
+      invoice_1 = create(:invoice, merchant: merchant_1, customer: customer_1, created_at: "2012-03-12 05:54:09 UTC")
+      transaction_1 = create(:transaction, result: 0, invoice: invoice_1)
+      invoice_item_1 = create(:invoice_item, item: item_1, invoice: invoice_1, quantity: 4, unit_price: 500)
+
+      invoice_2 = create(:invoice, merchant: merchant_1, customer: customer_1, created_at: "2012-03-12 05:54:09 UTC")
+      transaction_2 = create(:transaction, result: 0, invoice: invoice_2)
+      invoice_item_2 = create(:invoice_item, item: item_1, invoice: invoice_2, quantity: 2, unit_price: 1000)
+
+      invoice_3 = create(:invoice, merchant: merchant_1, customer: customer_1)
+      transaction_3 = create(:transaction, result: 0, invoice: invoice_3)
+      invoice_item_3 = create(:invoice_item, item: item_1, invoice: invoice_3, quantity: 5, unit_price: 2000)
+
+      id = merchant_1.id
+      get "/api/v1/merchants/#{id}/revenue?date=2012-03-12"
+
+      revenue = JSON.parse(response.body)["data"]
+
+      expect(response).to be_successful
+
+      expect(revenue["type"]).to eq("revenue")
+      expect(revenue["attributes"]).to eq("revenue" => "40.0")
+    end
   end
 end
