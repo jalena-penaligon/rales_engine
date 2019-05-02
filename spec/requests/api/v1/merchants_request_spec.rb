@@ -133,39 +133,31 @@ describe "Merchants API" do
       @customer = create(:customer)
 
       @merchant_1 = create(:merchant)
-      @item_1 = create(:item, merchant: @merchant_1, unit_price: 12)
-      @invoice_1 = create(:invoice, merchant: @merchant_1, customer: @customer)
-      @invoice_item_1 = create(:invoice_item, item: @item_1, invoice: @invoice_1, quantity: 2, unit_price: 12, created_at: "2012-03-27 14:54:09 UTC")
+      @item_1 = create(:item, merchant: @merchant_1, unit_price: 1250)
+      @invoice_1 = create(:invoice, merchant: @merchant_1, customer: @customer, created_at: "2012-03-27 14:54:09 UTC")
+      @transaction_1 = create(:transaction, invoice: @invoice_1, result: 0)
+      @invoice_item_1 = create(:invoice_item, item: @item_1, invoice: @invoice_1, quantity: 2, unit_price: 1250)
       @invoice_01 = create(:invoice, merchant: @merchant_1, customer: @customer)
-      @invoice_item_01 = create(:invoice_item, item: @item_1, invoice: @invoice_1, quantity: 4, unit_price: 12)
+      @transaction_01 = create(:transaction, invoice: @invoice_01, result: 0)
+      @invoice_item_01 = create(:invoice_item, item: @item_1, invoice: @invoice_1, quantity: 4, unit_price: 1250)
 
       @merchant_2 = create(:merchant)
-      @item_2 = create(:item, merchant: @merchant_2, unit_price: 4)
-      @invoice_2 = create(:invoice, merchant: @merchant_2, customer: @customer)
-      @invoice_item_2 = create(:invoice_item, item: @item_2, invoice: @invoice_2, quantity: 2, unit_price: 4, created_at: "2012-03-27 14:54:09 UTC")
+      @item_2 = create(:item, merchant: @merchant_2, unit_price: 400)
+      @invoice_2 = create(:invoice, merchant: @merchant_2, customer: @customer, created_at: "2012-03-27 14:54:09 UTC")
+      @transaction_2 = create(:transaction, invoice: @invoice_2, result: 0)
+      @invoice_item_2 = create(:invoice_item, item: @item_2, invoice: @invoice_2, quantity: 2, unit_price: 400)
       @invoice_02 = create(:invoice, merchant: @merchant_2, customer: @customer)
-      @invoice_item_02 = create(:invoice_item, item: @item_2, invoice: @invoice_2, quantity: 6, unit_price: 4)
+      @transaction_02 = create(:transaction, invoice: @invoice_02, result: 0)
+      @invoice_item_02 = create(:invoice_item, item: @item_2, invoice: @invoice_2, quantity: 6, unit_price: 400)
 
       @merchant_3 = create(:merchant)
-      @item_3 = create(:item, merchant: @merchant_3, unit_price: 6)
-      @invoice_3 = create(:invoice, merchant: @merchant_3, customer: @customer)
-      @invoice_item_3 = create(:invoice_item, item: @item_3, invoice: @invoice_3, quantity: 4, unit_price: 6, created_at: "2012-03-27 14:54:09 UTC")
+      @item_3 = create(:item, merchant: @merchant_3, unit_price: 6000)
+      @invoice_3 = create(:invoice, merchant: @merchant_3, customer: @customer, created_at: "2012-03-27 14:54:09 UTC")
+      @transaction_3 = create(:transaction, invoice: @invoice_3, result: 0)
+      @invoice_item_3 = create(:invoice_item, item: @item_3, invoice: @invoice_3, quantity: 4, unit_price: 6000)
       @invoice_03 = create(:invoice, merchant: @merchant_3, customer: @customer)
-      @invoice_item_03 = create(:invoice_item, item: @item_3, invoice: @invoice_3, quantity: 3, unit_price: 6)
-
-      @merchant_4 = create(:merchant)
-      @item_4 = create(:item, merchant: @merchant_4, unit_price: 3)
-      @invoice_4 = create(:invoice, merchant: @merchant_4, customer: @customer)
-      @invoice_item_4 = create(:invoice_item, item: @item_4, invoice: @invoice_4, quantity: 3, unit_price: 3, created_at: "2012-03-27 14:54:09 UTC")
-      @invoice_04 = create(:invoice, merchant: @merchant_4, customer: @customer)
-      @invoice_item_04 = create(:invoice_item, item: @item_4, invoice: @invoice_4, quantity: 7, unit_price: 3)
-
-      @merchant_5 = create(:merchant)
-      @item_5 = create(:item, merchant: @merchant_5, unit_price: 10)
-      @invoice_5 = create(:invoice, merchant: @merchant_5, customer: @customer)
-      @invoice_item_5 = create(:invoice_item, item: @item_5, invoice: @invoice_5, quantity: 2, unit_price: 10, created_at: "2012-03-27 14:54:09 UTC")
-      @invoice_05 = create(:invoice, merchant: @merchant_5, customer: @customer)
-      @invoice_item_05 = create(:invoice_item, item: @item_5, invoice: @invoice_5, quantity: 3, unit_price: 10)
+      @transaction_03 = create(:transaction, invoice: @invoice_03, result: 0)
+      @invoice_item_03 = create(:invoice_item, item: @item_3, invoice: @invoice_3, quantity: 3, unit_price: 6000)
     end
 
     it "can show top x merchants by revenue" do
@@ -177,9 +169,9 @@ describe "Merchants API" do
       expect(response).to be_successful
       expect(merchants["data"].count).to eq(3)
 
-      expect(merchants["data"][0]["attributes"]["name"]).to eq(@merchant_1.name)
-      expect(merchants["data"][1]["attributes"]["name"]).to eq(@merchant_5.name)
-      expect(merchants["data"][2]["attributes"]["name"]).to eq(@merchant_3.name)
+      expect(merchants["data"][0]["attributes"]["name"]).to eq(@merchant_3.name)
+      expect(merchants["data"][1]["attributes"]["name"]).to eq(@merchant_1.name)
+      expect(merchants["data"][2]["attributes"]["name"]).to eq(@merchant_2.name)
     end
 
     it "can show top x merchants by items sold" do
@@ -191,19 +183,19 @@ describe "Merchants API" do
       expect(response).to be_successful
       expect(merchants["data"].count).to eq(3)
 
-      expect(merchants["data"][0]["attributes"]["name"]).to eq(@merchant_4.name)
-      expect(merchants["data"][1]["attributes"]["name"]).to eq(@merchant_2.name)
-      expect(merchants["data"][2]["attributes"]["name"]).to eq(@merchant_3.name)
+      expect(merchants["data"][0]["attributes"]["name"]).to eq(@merchant_2.name)
+      expect(merchants["data"][1]["attributes"]["name"]).to eq(@merchant_3.name)
+      expect(merchants["data"][2]["attributes"]["name"]).to eq(@merchant_1.name)
     end
 
     it "can show revenue across all merchants on a given date" do
 
-      get "/api/v1/merchants/revenue?date=2012-03-27 14:54:09 UTC"
+      get "/api/v1/merchants/revenue?date=2012-03-27"
 
       merchants = JSON.parse(response.body)
 
       expect(response).to be_successful
-      expect(merchants["data"]["attributes"]).to eq("total_revenue" => 85)
+      expect(merchants["data"]["attributes"]).to eq("total_revenue" => "527.0")
     end
   end
 end

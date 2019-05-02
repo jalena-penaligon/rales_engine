@@ -38,9 +38,5 @@ RSpec.describe Merchant, type: :model do
     it 'can calculate top merchants by items_sold' do
       expect(Merchant.most_items(2)).to eq([@merchant_2, @merchant_3])
     end
-
-    it 'can calculate revenue for all merchants by date' do
-      expect(Merchant.revenue("2012-03-27 14:54:09 UTC")).to eq(51)
-    end
   end
 end
