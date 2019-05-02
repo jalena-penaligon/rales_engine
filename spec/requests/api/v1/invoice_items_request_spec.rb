@@ -12,7 +12,7 @@ describe "Invoice Items API" do
 
     expect(response).to be_successful
 
-    invoice_items = JSON.parse(response.body)
+    invoice_items = JSON.parse(response.body)["data"]
     expect(invoice_items.count).to eq(3)
   end
 
@@ -25,8 +25,8 @@ describe "Invoice Items API" do
 
     get "/api/v1/invoice_items/#{id}"
 
-    invoice_item = JSON.parse(response.body)
+    invoice_item = JSON.parse(response.body)["data"]
     expect(response).to be_successful
-    expect(invoice_item["id"]).to eq(id)
+    expect(invoice_item["id"].to_i).to eq(id)
   end
 end
