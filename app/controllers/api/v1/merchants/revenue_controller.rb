@@ -25,5 +25,4 @@ class Api::V1::Merchants::RevenueController < ApplicationController
     search_params["date"] = search_params["date"].to_datetime
     search_params
   end
-
 end
