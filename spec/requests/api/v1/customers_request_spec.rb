@@ -138,4 +138,46 @@ describe "Customers API" do
     expect(customer["data"].count).to eq(2)
     expect(customer["data"][0]["attributes"]["first_name"]).to eq(first_name)
   end
+
+  it "can show all invoices for a given customer" do
+    merchant = create(:merchant)
+    customer = create(:customer)
+    invoice_1 = create(:invoice, merchant: merchant, customer: customer)
+    invoice_2 = create(:invoice, merchant: merchant, customer: customer)
+    invoice_3 = create(:invoice, merchant: merchant, customer: customer)
+
+    id = customer.id
+
+    get "/api/v1/customers/#{id}/invoices"
+
+    invoices = JSON.parse(response.body)["data"]
+
+    expect(response).to be_successful
+
+    expect(invoices[0].count).to eq(3)
+    expect(invoices[0]["type"]).to eq("invoice")
+  end
+
+  it "can show all transactions for a given customer" do
+    merchant = create(:merchant)
+    customer = create(:customer)
+    invoice_1 = create(:invoice, merchant: merchant, customer: customer)
+    invoice_2 = create(:invoice, merchant: merchant, customer: customer)
+    invoice_3 = create(:invoice, merchant: merchant, customer: customer)
+
+    transaction_1 = create(:transaction, invoice: invoice_1)
+    transaction_2 = create(:transaction, invoice: invoice_2)
+    transaction_3 = create(:transaction, invoice: invoice_3)
+
+    id = customer.id
+
+    get "/api/v1/customers/#{id}/transactions"
+
+    invoices = JSON.parse(response.body)["data"]
+
+    expect(response).to be_successful
+
+    expect(invoices[0].count).to eq(3)
+    expect(invoices[0]["type"]).to eq("transaction")
+  end
 end

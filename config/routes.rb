@@ -23,6 +23,10 @@ Rails.application.routes.draw do
         get '/find_all', to: 'search#index'
       end
 
+      scope :customers do
+        get '/:id/invoices', to: 'customers/invoices#index'
+        get '/:id/transactions', to: 'customers/transactions#index'
+      end
 
       resources :customers, only: [:index, :show]
       resources :items, only: [:index, :show]
