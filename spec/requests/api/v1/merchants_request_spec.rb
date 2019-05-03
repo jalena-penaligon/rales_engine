@@ -230,12 +230,12 @@ describe "Merchants API" do
       id = merchant_1.id
       get "/api/v1/merchants/#{id}/invoices"
 
-      items = JSON.parse(response.body)["data"]
+      invoices = JSON.parse(response.body)["data"]
 
       expect(response).to be_successful
 
-      expect(items[0].count).to eq(3)
-      expect(items[0]["type"]).to eq("invoice")
+      expect(invoices[0].count).to eq(3)
+      expect(invoices[0]["type"]).to eq("invoice")
     end
 
     it "can show revenue for a merchant" do
