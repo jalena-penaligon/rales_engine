@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       namespace :merchants do
+        get ':id/favorite_customer', to: 'favorite_customer#show'
         get '/most_items', to: 'most_items#index'
         get '/revenue', to: 'revenue#index'
         get '/:id/revenue', to: 'revenue#show'
@@ -19,6 +20,7 @@ Rails.application.routes.draw do
       end
 
       namespace :customers do
+        get '/:id/favorite_merchant', to: 'favorite_merchant#show'
         get '/find', to: 'search#show'
         get '/find_all', to: 'search#index'
       end
@@ -26,6 +28,13 @@ Rails.application.routes.draw do
       scope :customers do
         get '/:id/invoices', to: 'customers/invoices#index'
         get '/:id/transactions', to: 'customers/transactions#index'
+      end
+
+      namespace :items do
+        get '/find', to: 'search#show'
+        get '/find_all', to: 'search#index'
+        get ':id/invoice_items', to: 'invoice_items#index'
+        get ':id/merchant', to: 'merchant#show'
       end
 
       resources :customers, only: [:index, :show]

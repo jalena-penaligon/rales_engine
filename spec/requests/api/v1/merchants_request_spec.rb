@@ -293,5 +293,34 @@ describe "Merchants API" do
       expect(revenue["type"]).to eq("revenue")
       expect(revenue["attributes"]).to eq("revenue" => "40.0")
     end
+
+    it 'can show a merchants favorite customer who has conducted the most transactions' do
+      merchant_1 = create(:merchant)
+      item_1 = create(:item, merchant: merchant_1)
+
+      customer_1 = create(:customer)
+      customer_2 = create(:customer)
+
+      invoice_1 = create(:invoice, merchant: merchant_1, customer: customer_1, created_at: "2012-03-12 05:54:09 UTC")
+      transaction_1 = create(:transaction, result: 0, invoice: invoice_1)
+
+      invoice_2 = create(:invoice, merchant: merchant_1, customer: customer_1, created_at: "2012-03-12 05:54:09 UTC")
+      transaction_2 = create(:transaction, result: 1, invoice: invoice_2)
+
+      invoice_3 = create(:invoice, merchant: merchant_1, customer: customer_2, created_at: "2012-03-12 05:54:09 UTC")
+      transaction_3 = create(:transaction, result: 0, invoice: invoice_3)
+
+      invoice_4 = create(:invoice, merchant: merchant_1, customer: customer_2)
+      transaction_4 = create(:transaction, result: 0, invoice: invoice_4)
+
+      id = merchant_1.id
+      get "/api/v1/merchants/#{id}/favorite_customer"
+
+      customer = JSON.parse(response.body)["data"]
+
+      expect(response).to be_successful
+      expect(customer["type"]).to eq("customer")
+      expect(customer["id"].to_i).to eq(customer_2.id)
+    end
   end
 end
