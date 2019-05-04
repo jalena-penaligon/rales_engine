@@ -180,4 +180,32 @@ describe "Customers API" do
     expect(invoices[0].count).to eq(3)
     expect(invoices[0]["type"]).to eq("transaction")
   end
+
+  it "can show a customers favorite merchant by successful transactions" do
+    merchant_1 = create(:merchant)
+    merchant_2 = create(:merchant)
+
+    customer = create(:customer)
+
+    invoice_1 = create(:invoice, merchant: merchant_1, customer: customer, created_at: "2012-03-12 05:54:09 UTC")
+    transaction_1 = create(:transaction, result: 0, invoice: invoice_1)
+
+    invoice_2 = create(:invoice, merchant: merchant_1, customer: customer, created_at: "2012-03-12 05:54:09 UTC")
+    transaction_2 = create(:transaction, result: 1, invoice: invoice_2)
+
+    invoice_3 = create(:invoice, merchant: merchant_2, customer: customer, created_at: "2012-03-12 05:54:09 UTC")
+    transaction_3 = create(:transaction, result: 0, invoice: invoice_3)
+
+    invoice_4 = create(:invoice, merchant: merchant_2, customer: customer)
+    transaction_4 = create(:transaction, result: 0, invoice: invoice_4)
+
+    id = customer.id
+    get "/api/v1/customers/#{id}/favorite_merchant"
+
+    merchant = JSON.parse(response.body)["data"]
+
+    expect(response).to be_successful
+    expect(merchant["type"]).to eq("merchant")
+    expect(merchant["id"].to_i).to eq(merchant_2.id)
+  end
 end
