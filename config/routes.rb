@@ -31,10 +31,36 @@ Rails.application.routes.draw do
       end
 
       namespace :items do
+        get '/most_revenue', to: 'most_revenue#show'
+        get '/most_items', to: 'most_items#show'
         get '/find', to: 'search#show'
         get '/find_all', to: 'search#index'
         get ':id/invoice_items', to: 'invoice_items#index'
         get ':id/merchant', to: 'merchant#show'
+        get ':id/best_day', to: 'best_day#show'
+      end
+
+      namespace :invoice_items do
+        get '/find', to: 'search#show'
+        get '/find_all', to: 'search#index'
+        get '/:id/invoice', to: 'invoice#show'
+        get '/:id/item', to: 'item#show'
+      end
+
+      namespace :transactions do
+        get '/find', to: 'search#show'
+        get '/find_all', to: 'search#index'
+        get '/:id/invoice', to: 'invoice#show'
+      end
+
+      namespace :invoices do
+        get '/:id/transactions', to: 'transaction#index'
+        get '/:id/invoice_items', to: 'invoice_item#index'
+        get '/:id/items', to: 'item#index'
+        get '/:id/customer', to: 'customer#index'
+        get '/:id/merchant', to: 'merchant#index'
+        get '/find', to: 'search#show'
+        get '/find_all', to: 'search#index'
       end
 
       resources :customers, only: [:index, :show]
