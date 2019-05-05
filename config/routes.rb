@@ -10,7 +10,7 @@ Rails.application.routes.draw do
         get '/random', to: 'random#show'
         get '/find_all', to: 'search#index'
         get '/find', to: 'search#show'
-        get '/', to: 'merchants#index'
+        get '/', to: 'merchants#index' 
         get '/:id', to: 'merchants#show'
       end
 

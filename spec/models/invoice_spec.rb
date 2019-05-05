@@ -31,11 +31,5 @@ RSpec.describe Invoice, type: :model do
       @invoice_03 = create(:invoice, merchant: @merchant_3, customer: @customer)
       @invoice_item_03 = create(:invoice_item, item: @item_3, invoice: @invoice_3, quantity: 3, unit_price: 2)
     end
-
-    it 'can calculate revenue for all merchants by date' do
-      date = "2012-03-27".to_datetime
-
-      expect(Invoice.revenue(date)[0].total_revenue).to eq(51)
-    end
   end
 end

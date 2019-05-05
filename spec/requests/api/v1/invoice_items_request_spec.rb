@@ -251,9 +251,9 @@ describe "Invoice Items API" do
     id = create(:invoice_item, item: item, invoice: invoice).id
     invoice_id = invoice.id
 
-    get "/api/v1/invoice_items/find?invoice_id=#{invoice_id}"
+    get "/api/v1/invoice_items/find_all?invoice_id=#{invoice_id}"
 
-    invoice_item = JSON.parse(response.body)["data"]
+    invoice_item = JSON.parse(response.body)["data"][0]
     expect(response).to be_successful
     expect(invoice_item["id"].to_i).to eq(id)
   end
@@ -266,9 +266,9 @@ describe "Invoice Items API" do
     id = create(:invoice_item, item: item, invoice: invoice).id
     item_id = item.id
 
-    get "/api/v1/invoice_items/find?item_id=#{item_id}"
+    get "/api/v1/invoice_items/find_all?item_id=#{item_id}"
 
-    invoice_item = JSON.parse(response.body)["data"]
+    invoice_item = JSON.parse(response.body)["data"][0]
     expect(response).to be_successful
     expect(invoice_item["id"].to_i).to eq(id)
   end
@@ -280,9 +280,9 @@ describe "Invoice Items API" do
     invoice = create(:invoice, customer: customer, merchant: merchant)
     quantity = create(:invoice_item, item: item, invoice: invoice).quantity
 
-    get "/api/v1/invoice_items/find?quantity=#{quantity}"
+    get "/api/v1/invoice_items/find_all?quantity=#{quantity}"
 
-    invoice_item = JSON.parse(response.body)["data"]
+    invoice_item = JSON.parse(response.body)["data"][0]
 
     expect(response).to be_successful
     expect(invoice_item["attributes"]["quantity"].to_i).to eq(quantity)
@@ -296,9 +296,9 @@ describe "Invoice Items API" do
     invoice = create(:invoice, customer: customer, merchant: merchant)
     invoice_item = create(:invoice_item, item: item, invoice: invoice, unit_price: 355).quantity
 
-    get "/api/v1/invoice_items/find?unit_price=#{unit_price}"
+    get "/api/v1/invoice_items/find_all?unit_price=#{unit_price}"
 
-    invoice_item = JSON.parse(response.body)["data"]
+    invoice_item = JSON.parse(response.body)["data"][0]
 
     expect(response).to be_successful
     expect(invoice_item["attributes"]["unit_price"].to_f).to eq(unit_price)
@@ -313,9 +313,9 @@ describe "Invoice Items API" do
     id = invoice_item.id
     created_at = invoice_item.created_at
 
-    get "/api/v1/invoice_items/find?created_at=#{created_at}"
+    get "/api/v1/invoice_items/find_all?created_at=#{created_at}"
 
-    invoice_item = JSON.parse(response.body)["data"]
+    invoice_item = JSON.parse(response.body)["data"][0]
     expect(response).to be_successful
     expect(invoice_item["id"].to_i).to eq(id)
   end
@@ -329,9 +329,9 @@ describe "Invoice Items API" do
     id = invoice_item.id
     updated_at = invoice_item.updated_at
 
-    get "/api/v1/invoice_items/find?updated_at=#{updated_at}"
+    get "/api/v1/invoice_items/find_all?updated_at=#{updated_at}"
 
-    invoice_item = JSON.parse(response.body)["data"]
+    invoice_item = JSON.parse(response.body)["data"][0]
     expect(response).to be_successful
     expect(invoice_item["id"].to_i).to eq(id)
   end
