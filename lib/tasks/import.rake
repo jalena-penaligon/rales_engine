@@ -3,6 +3,10 @@ require 'csv'
 namespace :import do
   desc "TODO"
   task sales_engine: :environment do
+    Rake::Task["db:drop"].execute
+    Rake::Task["db:create"].execute
+    Rake::Task["db:migrate"].execute
+
     CSV.foreach('db/sales_engine/customers.csv', headers: true) do |row|
       Customer.create(row.to_h)
     end
