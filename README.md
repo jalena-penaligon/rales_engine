@@ -2,7 +2,7 @@
 
 Welcome to Rales Engine, a JSON API designed to expose endpoints for customers, merchants, items, invoices, invoice items and transactions.
 
-##Intent
+## Intent
 
 This project was completed in 7 days as a requirement for Module 3.
 
@@ -13,7 +13,7 @@ The project was built using Rails which implements the following:
 * Advanced database queries and calculations using ActiveRecord.
 * FactoryBot to create objects for efficient testing.
 
-##System Requirements
+## System Requirements
 
 * Rails 5.x
 * ActiveRecord - PostgreSQL.
